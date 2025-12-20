@@ -422,7 +422,7 @@ const perfumes = [
     decants: { "5":140, "10":260 },
     precioEntero: 2800,
     moneda: "MXN",
-    disponible: true
+    disponible: false
   },
   {
     nombre: "Le Male Elixir",
@@ -433,7 +433,7 @@ const perfumes = [
     decants: { "5":150, "10":280 },
     precioEntero: 2800,
     moneda: "MXN",
-    disponible: false
+    disponible: true
   },
   {
     nombre: "Ultra Male",
@@ -552,22 +552,36 @@ function showSkeletons(){
 }
 
 function renderGrid(){
-  grid.innerHTML = perfumes.map((p,i)=>`
+
+  // 1️⃣ separar disponibles y agotados (sin cambiar tu orden)
+  const disponibles = perfumes.filter(p => p.disponible);
+  const agotados = perfumes.filter(p => !p.disponible);
+
+  // 2️⃣ unir: disponibles primero, agotados al final
+  const ordenados = [...disponibles, ...agotados];
+
+  // 3️⃣ renderizar
+  grid.innerHTML = ordenados.map((p,i)=>`
     <article class="card ${!p.disponible ? 'agotado' : ''}"
       style="animation-delay:${i * 70}ms"
-      ${p.disponible ? `onclick="openDetail(${i})"` : ''}>
+      ${p.disponible ? `onclick="openDetail(${perfumes.indexOf(p)})"` : ''}>
+
       ${!p.disponible ? `<div class="agotado-badge">AGOTADO</div>` : ''}
-      <div class="img"><img src="${p.imagen}" alt="${p.nombre}"></div>
+
+      <div class="img">
+        <img src="${p.imagen}" alt="${p.nombre}">
+      </div>
+
       <div class="content">
         <div class="name">${p.nombre}</div>
         <div class="price-from">
-          Desde ${money(p.decants[5], p.moneda)}  MXN
+          Desde ${money(p.decants[5], p.moneda)}
         </div>
       </div>
-
     </article>
   `).join("");
 }
+
 showSkeletons();
 
 setTimeout(()=>{
