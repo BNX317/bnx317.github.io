@@ -35,14 +35,35 @@ body{
   margin:0 auto;
   position:relative;
   transition:transform .2s ease, box-shadow .2s ease;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp .5s ease forwards;
+}
+@keyframes fadeUp{
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
 }
 .card:hover{
   transform:translateY(-4px);
   box-shadow:0 14px 30px rgba(0,0,0,.35);
 }
+.card:active{
+  transform: scale(0.97);
+}
+
 .card.agotado{
-  opacity:.5;
   cursor:not-allowed;
+}
+.card.agotado::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.35);
+}
+.card:hover .img img{
+  transform: scale(1.08);
 }
 .agotado-badge{
   position:absolute;
@@ -71,6 +92,7 @@ body{
   height:100%;
   object-fit:cover;       /* CLAVE */
   border-radius:12px;
+  transition: transform .3s ease;
 }
 
 .content{padding:10px}
@@ -115,10 +137,8 @@ body{
 .muted{color:var(--muted);font-size:13px}
 
 /* ML */
-.ml-options{
-  display:flex;
-  gap:10px;
-  margin:10px 0;
+.ml-options button.active{
+  box-shadow: 0 0 0 2px rgba(110,231,255,.4);
 }
 .ml-options button{
   padding:8px 14px;
@@ -223,6 +243,88 @@ body{
   color:var(--muted);
   font-size:13px;
 }
+.modal-box{
+  animation: pop .25s ease;
+}
+
+@keyframes pop{
+  from{
+    transform: scale(.9);
+    opacity:0;
+  }
+  to{
+    transform: scale(1);
+    opacity:1;
+  }
+}
+.ml-options button{
+  transition: transform .15s ease, background .2s;
+}
+
+.ml-options button:active{
+  transform: scale(.92);
+}
+.btn:not(.disabled):hover{
+  box-shadow: 0 0 0 rgba(110,231,255,.7);
+  animation: glow 1.4s infinite;
+}
+
+@keyframes glow{
+  0%{ box-shadow:0 0 0 rgba(110,231,255,.7); }
+  70%{ box-shadow:0 0 25px rgba(110,231,255,.2); }
+  100%{ box-shadow:0 0 0 rgba(110,231,255,0); }
+}
+.wa-fixed{
+  animation: float 2.5s ease-in-out infinite;
+}
+
+@keyframes float{
+  0%,100%{ transform:translateY(0); }
+  50%{ transform:translateY(-6px); }
+}
+.card.agotado:hover{
+  transform:none;
+  box-shadow:none;
+}
+/* ===== MEJORA VISTA MÓVIL ===== */
+@media (max-width: 600px){
+
+  .grid{
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .card{
+    max-width: 100%;
+    border-radius: 12px;
+  }
+
+  .img{
+    height: 180px; /* imagen más baja */
+    padding: 10px;
+  }
+
+  .name{
+    font-size: 14px;
+    line-height: 1.2;
+  }
+
+  .content{
+    padding: 8px;
+  }
+
+  .agotado-badge{
+    font-size: 10px;
+    padding: 3px 6px;
+  }
+
+  .wa-fixed{
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+}
+
+
 
 
 </style>
@@ -262,8 +364,8 @@ const perfumes = [
     genero: "Hombre",
     imagen: "img/valentino.png",
     imagenDetalle: "img/valentinod.png",
-    decants: { "5":180, "10":340 },
-    precioEntero: 3800,
+    decants: { "5":60, "10":100 },
+    precioEntero: 1000,
     moneda: "MXN",
     disponible: true
   },
@@ -296,7 +398,7 @@ const perfumes = [
     imagen: "img/ultra.png",
     imagenDetalle: "img/ultrad.png",
     decants: { "5":140, "10":260 },
-    precioEntero: 2800,
+    precioEntero: 800,
     moneda: "MXN",
     disponible: false
   },
@@ -361,8 +463,8 @@ const perfumes = [
     genero: "Hombre",
     imagen: "img/9pmr.png",
     imagenDetalle: "img/9pmrd.png",
-    decants: { "5":90, "10":160 },
-    precioEntero: 1100,
+    decants: { "5":60, "10":100 },
+    precioEntero: 1000,
     moneda: "MXN",
     disponible: false
   },
@@ -399,6 +501,7 @@ const money = (n,m)=>new Intl.NumberFormat("es-MX",{style:"currency",currency:m}
 function renderGrid(){
   grid.innerHTML = perfumes.map((p,i)=>`
     <article class="card ${!p.disponible ? 'agotado' : ''}"
+      style="animation-delay:${i * 70}ms"
       ${p.disponible ? `onclick="openDetail(${i})"` : ''}>
       ${!p.disponible ? `<div class="agotado-badge">AGOTADO</div>` : ''}
       <div class="img"><img src="${p.imagen}"></div>
@@ -407,9 +510,11 @@ function renderGrid(){
   `).join("");
 }
 
+
 let selectedIndex = null;
 
 function openDetail(i){
+  vibrate();
   const p = perfumes[i];
   selectedIndex = i;
 
@@ -429,7 +534,7 @@ function openDetail(i){
     <h2>${p.nombre}</h2>
     <p class="muted">${p.marca} • ${p.genero}</p>
 
-    <img src="${p.imagenDetalle}" class="detail-img"
+    <img src="${p.imagenDetalle}" class="detail-img" alt="${p.nombre}"
          onclick="openImage('${p.imagenDetalle}')">
 
     <h3>Selecciona ml</h3>
@@ -447,11 +552,24 @@ function openDetail(i){
     <a id="waBtn" class="btn disabled">Pedir por WhatsApp</a>
   `;
   modal.classList.add("show");
+  document.body.style.overflow = "hidden";
+
 }
 
-function closeDetail(){ modal.classList.remove("show"); }
+function closeDetail(){
+  modal.classList.remove("show");
+  document.body.style.overflow = "";
+}
+
+modal.addEventListener("click", e => {
+  if(e.target === modal){
+    closeDetail();
+  }
+});
+
 
 function selectML(ml){
+  vibrate();
   const p = perfumes[selectedIndex];
   document.querySelectorAll(".ml-options button").forEach(b=>b.classList.remove("active"));
   document.getElementById(`ml-${ml}`).classList.add("active");
@@ -479,8 +597,13 @@ function closeImage(){
 document.addEventListener("keydown",e=>{
   if(e.key==="Escape") closeImage();
 });
+function vibrate(){
+  if(navigator.vibrate) navigator.vibrate(20);
+}
+
 
 renderGrid();
+
 </script>
 <!-- ===== WHATSAPP FLOTANTE ===== -->
 <a class="wa-fixed"
@@ -488,6 +611,7 @@ renderGrid();
    target="_blank">
   WhatsApp
 </a>
+
 <!-- ===== FOOTER ===== -->
 <footer class="footer">
   <p>© 2025 Perfumería</p>
@@ -496,6 +620,3 @@ renderGrid();
 
 </body>
 </html>
-
-
-
