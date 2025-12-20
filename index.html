@@ -323,6 +323,50 @@ body{
     font-size: 14px;
   }
 }
+.price-from{
+  margin-top: 4px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  font-size: 12px;
+}
+/* ===== SKELETON LOADER ===== */
+.skeleton{
+  background: var(--card);
+  border-radius: 14px;
+  padding: 10px;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.skeleton-img{
+  height: 180px;
+  background: #1f2937;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.skeleton-text{
+  height: 14px;
+  background: #1f2937;
+  border-radius: 6px;
+  margin: 6px auto;
+  width: 80%;
+}
+
+.skeleton-price{
+  height: 12px;
+  background: #1f2937;
+  border-radius: 6px;
+  width: 40%;
+  margin: 6px auto;
+}
+
+@keyframes pulse{
+  0%{ opacity: .6; }
+  50%{ opacity: 1; }
+  100%{ opacity: .6; }
+}
 
 
 
@@ -364,7 +408,7 @@ const perfumes = [
     genero: "Hombre",
     imagen: "img/valentino.png",
     imagenDetalle: "img/valentinod.png",
-    decants: { "5":60, "10":100 },
+    decants: { "5":180, "10":340 },
     precioEntero: 1000,
     moneda: "MXN",
     disponible: true
@@ -497,6 +541,15 @@ const modal = document.getElementById("modal");
 const modalContent = document.getElementById("modalContent");
 
 const money = (n,m)=>new Intl.NumberFormat("es-MX",{style:"currency",currency:m}).format(n);
+function showSkeletons(){
+  grid.innerHTML = Array.from({length: 6}).map(()=>`
+    <div class="skeleton">
+      <div class="skeleton-img"></div>
+      <div class="skeleton-text"></div>
+      <div class="skeleton-price"></div>
+    </div>
+  `).join("");
+}
 
 function renderGrid(){
   grid.innerHTML = perfumes.map((p,i)=>`
@@ -504,11 +557,22 @@ function renderGrid(){
       style="animation-delay:${i * 70}ms"
       ${p.disponible ? `onclick="openDetail(${i})"` : ''}>
       ${!p.disponible ? `<div class="agotado-badge">AGOTADO</div>` : ''}
-      <div class="img"><img src="${p.imagen}"></div>
-      <div class="content"><div class="name">${p.nombre}</div></div>
+      <div class="img"><img src="${p.imagen}" alt="${p.nombre}"></div>
+      <div class="content">
+        <div class="name">${p.nombre}</div>
+        <div class="price-from">
+          Desde ${money(p.decants[5], p.moneda)}  MXN
+        </div>
+      </div>
+
     </article>
   `).join("");
 }
+showSkeletons();
+
+setTimeout(()=>{
+  renderGrid();
+}, 300); // 0.9 segundos solo para prueba
 
 
 let selectedIndex = null;
@@ -601,8 +665,6 @@ function vibrate(){
   if(navigator.vibrate) navigator.vibrate(20);
 }
 
-
-renderGrid();
 
 </script>
 <!-- ===== WHATSAPP FLOTANTE ===== -->
