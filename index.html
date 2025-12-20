@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mis Perfumes</title>
+
+<style>
+:root{
+  --bg:#0b0d12; --card:#121826; --text:#e9eefc; --muted:#a9b4d0;
+  --accent:#6ee7ff; --border:rgba(255,255,255,.12);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; font-family:system-ui,Segoe UI,Arial;
+  background:linear-gradient(180deg,#080a10,#0b0d12);
+  color:var(--text);
+}
+.wrap{max-width:1050px;margin:0 auto;padding:18px}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:14px;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+  cursor:pointer;
+  max-width:260px;
+  margin:0 auto;
+  position:relative;
+}
+.card.agotado{
+  opacity:.5;
+  cursor:not-allowed;
+}
+.agotado-badge{
+  position:absolute;
+  top:10px;
+  left:10px;
+  background:#e11d48;
+  color:#fff;
+  font-size:12px;
+  font-weight:800;
+  padding:4px 8px;
+  border-radius:999px;
+  z-index:2;
+}
+.img{
+  width:100%;
+  height:260px;           /* ALTURA FIJA */
+  background:#0f1422;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:14px;
+}
+
+.img img{
+  width:100%;
+  height:100%;
+  object-fit:cover;       /* CLAVE */
+  border-radius:12px;
+}
+
+.content{padding:10px}
+.name{font-weight:700;text-align:center}
+
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.7);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:1000;
+}
+.modal.show{display:flex}
+.modal-box{
+  background:var(--card);
+  width:92%;
+  max-width:520px;
+  padding:18px;
+  border-radius:16px;
+  position:relative;
+}
+.close{
+  position:absolute;
+  top:10px;
+  right:12px;
+  background:none;
+  border:none;
+  color:white;
+  font-size:18px;
+  cursor:pointer;
+}
+.detail-img{
+  width:100%;
+  max-height:340px;
+  object-fit:contain;
+  margin:12px 0;
+  cursor:zoom-in;
+}
+.muted{color:var(--muted);font-size:13px}
+
+/* ML */
+.ml-options{
+  display:flex;
+  gap:10px;
+  margin:10px 0;
+}
+.ml-options button{
+  padding:8px 14px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:none;
+  color:var(--text);
+  cursor:pointer;
+  font-weight:600;
+}
+.ml-options button.active{
+  background:rgba(110,231,255,.2);
+  border-color:rgba(110,231,255,.6);
+}
+
+/* PRECIOS */
+.prices{margin-top:8px}
+.price-decants{font-size:18px;font-weight:800}
+.price-full{font-size:13px;color:var(--muted)}
+
+.btn{
+  display:block;
+  margin-top:14px;
+  padding:12px;
+  text-align:center;
+  border-radius:12px;
+  border:1px solid rgba(110,231,255,.35);
+  background:rgba(110,231,255,.12);
+  color:var(--text);
+  text-decoration:none;
+  font-weight:700;
+}
+.btn.disabled{
+  opacity:.5;
+  pointer-events:none;
+}
+
+/* LIGHTBOX */
+.img-viewer{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.9);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:2000;
+}
+.img-viewer.show{display:flex}
+.img-viewer img{
+  max-width:90%;
+  max-height:90%;
+  object-fit:contain;
+  border-radius:12px;
+}
+.img-close{
+  position:absolute;
+  top:20px;
+  right:20px;
+  background:none;
+  border:none;
+  color:white;
+  font-size:24px;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+  <div id="grid" class="grid"></div>
+</div>
+
+<div id="modal" class="modal">
+  <div class="modal-box">
+    <button class="close" onclick="closeDetail()">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<div id="imgViewer" class="img-viewer" onclick="closeImage()">
+  <button class="img-close" onclick="closeImage()">✕</button>
+  <img id="imgViewerContent">
+</div>
+
+<script>
+const WHATSAPP_NUMBER = "527671033923";
+
+const perfumes = [
+  {
+    nombre: "Valentino Uomo Born In Roma Intense",
+    marca: "Valentino",
+    genero: "Hombre",
+    imagen: "img/valentino.png",
+    imagenDetalle: "img/valentinod.png",
+    decants: { "5":60, "10":100 },
+    precioEntero: 1000,
+    moneda: "MXN",
+    disponible: true
+  },
+  {
+    nombre: "Le Beau Paradise Garden",
+    marca: "Jean Paul Gaultier",
+    genero: "Hombre",
+    imagen: "img/lebeau-card.png",
+    imagenDetalle: "img/lebeau-detalle.png",
+    decants: { "5":140, "10":260 },
+    precioEntero: 2800,
+    moneda: "MXN",
+    disponible: true
+  },
+  {
+    nombre: "Le Male Elixir",
+    marca: "Jean Paul Gaultier",
+    genero: "Hombre",
+    imagen: "img/elixirx.png",
+    imagenDetalle: "img/elixird.png",
+    decants: { "5":150, "10":280 },
+    precioEntero: 2800,
+    moneda: "MXN",
+    disponible: true
+  },
+  {
+    nombre: "Ultra Male",
+    marca: "Jean Paul Gaultier",
+    genero: "Hombre",
+    imagen: "img/ultra.png",
+    imagenDetalle: "img/ultrad.png",
+    decants: { "5":140, "10":260 },
+    precioEntero: 800,
+    moneda: "MXN",
+    disponible: true
+  },
+  {
+    nombre: "Eros Eau de Parfum",
+    marca: "Afnan",
+    genero: "Hombre",
+    imagen: "img/eros.png",
+    imagenDetalle: "img/erosd.png",
+    decants: { "5":100, "10":180 },
+    precioEntero: 1500,
+    moneda: "MXN",
+    disponible: true
+  },
+  {
+    nombre: "Hawas ice",
+    marca: "Rasasi",
+    genero: "Hombre",
+    imagen: "img/hawas.png",
+    imagenDetalle: "img/hawasd.png",
+    decants: { "5":80, "10":140 },
+    precioEntero: 1000,
+    moneda: "MXN",
+    disponible: true
+  },
+  {
+    nombre: "Nitro Red",
+    marca: "Dumont",
+    genero: "Hombre",
+    imagen: "img/n.png",
+    imagenDetalle: "img/nd.png",
+    decants: { "5":70, "10":120 },
+    precioEntero: 900,
+    moneda: "MXN",
+    disponible: true
+  },
+  {
+    nombre: "9 PM",
+    marca: "Afnan",
+    genero: "Hombre",
+    imagen: "img/9pm.png",
+    imagenDetalle: "img/9pmd.png",
+    decants: { "5":60, "10":100 },
+    precioEntero: 800,
+    moneda: "MXN",
+    disponible: true
+  },
+  {
+    nombre: "9 AM",
+    marca: "Afnan",
+    genero: "Hombre",
+    imagen: "img/9am.png",
+    imagenDetalle: "img/9amd.png",
+    decants: { "5":60, "10":100 },
+    precioEntero: 800,
+    moneda: "MXN",
+    disponible: true
+  },
+  {
+    nombre: "9 PM Rebel",
+    marca: "Afnan",
+    genero: "Hombre",
+    imagen: "img/9pmr.png",
+    imagenDetalle: "img/9pmrd.png",
+    decants: { "5":60, "10":100 },
+    precioEntero: 1000,
+    moneda: "MXN",
+    disponible: true
+  },
+  {
+    nombre: "Odyssey Mandarin Sky",
+    marca: "Armaf",
+    genero: "Hombre",
+    imagen: "img/sky.png",
+    imagenDetalle: "img/skyd.png",
+    decants: { "5":60, "10":100 },
+    precioEntero: 800,
+    moneda: "MXN",
+    disponible: true
+  },
+  {
+    nombre: "Salvo edp",
+    marca: "Maison Alhambra",
+    genero: "Hombre",
+    imagen: "img/s.png",
+    imagenDetalle: "img/sd.png",
+    decants: { "5":60, "10":100 },
+    precioEntero: 800,
+    moneda: "MXN",
+    disponible: true
+  }
+];
+
+const grid = document.getElementById("grid");
+const modal = document.getElementById("modal");
+const modalContent = document.getElementById("modalContent");
+
+const money = (n,m)=>new Intl.NumberFormat("es-MX",{style:"currency",currency:m}).format(n);
+
+function renderGrid(){
+  grid.innerHTML = perfumes.map((p,i)=>`
+    <article class="card ${!p.disponible ? 'agotado' : ''}"
+      ${p.disponible ? `onclick="openDetail(${i})"` : ''}>
+      ${!p.disponible ? `<div class="agotado-badge">AGOTADO</div>` : ''}
+      <div class="img"><img src="${p.imagen}"></div>
+      <div class="content"><div class="name">${p.nombre}</div></div>
+    </article>
+  `).join("");
+}
+
+let selectedIndex = null;
+
+function openDetail(i){
+  const p = perfumes[i];
+  selectedIndex = i;
+
+  if(!p.disponible){
+    modalContent.innerHTML = `
+      <h2>${p.nombre}</h2>
+      <p class="muted">Producto agotado</p>
+      <p style="margin-top:10px;color:var(--muted)">
+        Escríbeme para saber cuándo vuelve.
+      </p>
+    `;
+    modal.classList.add("show");
+    return;
+  }
+
+  modalContent.innerHTML = `
+    <h2>${p.nombre}</h2>
+    <p class="muted">${p.marca} • ${p.genero}</p>
+
+    <img src="${p.imagenDetalle}" class="detail-img"
+         onclick="openImage('${p.imagenDetalle}')">
+
+    <h3>Selecciona ml</h3>
+    <div class="ml-options">
+      ${Object.keys(p.decants).map(ml=>`
+        <button id="ml-${ml}" onclick="selectML(${ml})">${ml} ml</button>
+      `).join("")}
+    </div>
+
+    <div class="prices">
+      <div id="selectedPrice" class="price-decants">Selecciona un tamaño</div>
+      <div class="price-full">Entero: ${money(p.precioEntero,p.moneda)}</div>
+    </div>
+
+    <a id="waBtn" class="btn disabled">Pedir por WhatsApp</a>
+  `;
+  modal.classList.add("show");
+}
+
+function closeDetail(){ modal.classList.remove("show"); }
+
+function selectML(ml){
+  const p = perfumes[selectedIndex];
+  document.querySelectorAll(".ml-options button").forEach(b=>b.classList.remove("active"));
+  document.getElementById(`ml-${ml}`).classList.add("active");
+
+  const price = p.decants[ml];
+  document.getElementById("selectedPrice").textContent =
+    `${ml} ml — ${money(price,p.moneda)}`;
+
+  const msg = encodeURIComponent(
+    `Hola, quiero:\n${p.nombre}\n${ml} ml\nPrecio: ${money(price,p.moneda)}`
+  );
+
+  const btn = document.getElementById("waBtn");
+  btn.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
+  btn.classList.remove("disabled");
+}
+
+function openImage(src){
+  imgViewerContent.src = src;
+  imgViewer.classList.add("show");
+}
+function closeImage(){
+  imgViewer.classList.remove("show");
+}
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape") closeImage();
+});
+
+renderGrid();
+</script>
+
+</body>
+</html>
