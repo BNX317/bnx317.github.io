@@ -11,11 +11,14 @@
   --accent:#6ee7ff; --border:rgba(255,255,255,.12);
 }
 *{box-sizing:border-box}
+
 body{
+  
   margin:0; font-family:system-ui,Segoe UI,Arial;
   background:linear-gradient(180deg,#080a10,#0b0d12);
   color:var(--text);
 }
+
 .wrap{max-width:1050px;margin:0 auto;padding:18px}
 .grid{
   display:grid;
@@ -31,6 +34,11 @@ body{
   max-width:260px;
   margin:0 auto;
   position:relative;
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+.card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 14px 30px rgba(0,0,0,.35);
 }
 .card.agotado{
   opacity:.5;
@@ -175,10 +183,58 @@ body{
   font-size:24px;
   cursor:pointer;
 }
+/* ===== HEADER PROFESIONAL ===== */
+.top{
+  position:sticky;
+  top:0;
+  z-index:900;
+  background:#0b0d12;
+  border-bottom:1px solid var(--border);
+  padding:14px;
+  text-align:center;
+}
+.top h1{
+  margin:0;
+  font-size:20px;
+}
+.top p{
+  margin:4px 0 0;
+  color:var(--muted);
+  font-size:13px;
+}
+/* ===== WHATSAPP FLOTANTE ===== */
+.wa-fixed{
+  position:fixed;
+  bottom:18px;
+  right:18px;
+  background:#22c55e;
+  color:white;
+  padding:14px 18px;
+  border-radius:999px;
+  text-decoration:none;
+  font-weight:800;
+  box-shadow:0 10px 25px rgba(0,0,0,.4);
+  z-index:1500;
+}
+/* ===== FOOTER ===== */
+.footer{
+  text-align:center;
+  padding:30px 10px;
+  color:var(--muted);
+  font-size:13px;
+}
+
+
 </style>
 </head>
 
 <body>
+  <!-- ===== HEADER PROFESIONAL ===== -->
+<header class="top">
+  <h1>Perfumería</h1>
+  <p>Decants y perfumes originales</p>
+</header>
+
 
 <div class="wrap">
   <div id="grid" class="grid"></div>
@@ -426,6 +482,17 @@ document.addEventListener("keydown",e=>{
 
 renderGrid();
 </script>
+<!-- ===== WHATSAPP FLOTANTE ===== -->
+<a class="wa-fixed"
+   href="https://wa.me/527671033923"
+   target="_blank">
+  WhatsApp
+</a>
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <p>© 2025 Perfumería</p>
+  <p class="muted">Productos originales • Envíos a todo Altamirano</p>
+</footer>
 
 </body>
 </html>
