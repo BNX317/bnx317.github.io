@@ -395,6 +395,14 @@ body{
 .card.agotado::before{
   display: none;
 }
+/* Quitar highlight azul en móvil */
+*{
+  -webkit-tap-highlight-color: transparent;
+}
+.card{
+  user-select: none;
+  -webkit-user-select: none;
+}
 
 
 
@@ -735,4 +743,3 @@ function vibrate(){
 
 </body>
 </html>
-
