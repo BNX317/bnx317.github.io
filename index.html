@@ -467,7 +467,8 @@ const perfumes = [
     decants: { "5":180, "10":340 },
     precioEntero: 1000,
     moneda: "MXN",
-    disponible: true
+    disponible: true,
+    visible: true
   },
   {
     nombre: "Le Beau Paradise Garden",
@@ -478,7 +479,8 @@ const perfumes = [
     decants: { "5":140, "10":260 },
     precioEntero: 2800,
     moneda: "MXN",
-    disponible: true
+    disponible: true,
+    visible: true
   },
   {
     nombre: "Le Male Elixir",
@@ -489,7 +491,8 @@ const perfumes = [
     decants: { "5":150, "10":280 },
     precioEntero: 2800,
     moneda: "MXN",
-    disponible: false
+    disponible: false,
+    visible: true
   },
   {
     nombre: "Ultra Male",
@@ -500,7 +503,8 @@ const perfumes = [
     decants: { "5":140, "10":260 },
     precioEntero: 800,
     moneda: "MXN",
-    disponible: false
+    disponible: false,
+    visible: true
   },
   {
     nombre: "Eros Eau de Parfum",
@@ -511,7 +515,8 @@ const perfumes = [
     decants: { "5":100, "10":180 },
     precioEntero: 1500,
     moneda: "MXN",
-    disponible: true
+    disponible: true,
+    visible: true
   },
   {
     nombre: "Hawas ice",
@@ -522,7 +527,8 @@ const perfumes = [
     decants: { "5":80, "10":140 },
     precioEntero: 1000,
     moneda: "MXN",
-    disponible: true
+    disponible: true,
+    visible: true
   },
   {
     nombre: "Nitro Red",
@@ -533,7 +539,8 @@ const perfumes = [
     decants: { "5":70, "10":120 },
     precioEntero: 900,
     moneda: "MXN",
-    disponible: true
+    disponible: true,
+    visible: true
   },
   {
     nombre: "9 PM",
@@ -544,7 +551,8 @@ const perfumes = [
     decants: { "5":60, "10":100 },
     precioEntero: 800,
     moneda: "MXN",
-    disponible: false
+    disponible: false,
+    visible: true
   },
   {
     nombre: "9 AM",
@@ -555,7 +563,8 @@ const perfumes = [
     decants: { "5":60, "10":100 },
     precioEntero: 800,
     moneda: "MXN",
-    disponible: false
+    disponible: false,
+    visible: true
   },
   {
     nombre: "9 PM Rebel",
@@ -566,7 +575,8 @@ const perfumes = [
     decants: { "5":80, "10":140 },
     precioEntero: 1000,
     moneda: "MXN",
-    disponible: false
+    disponible: false,
+    visible: true
   },
   {
     nombre: "Odyssey Mandarin Sky",
@@ -577,7 +587,8 @@ const perfumes = [
     decants: { "5":60, "10":100 },
     precioEntero: 800,
     moneda: "MXN",
-    disponible: false
+    disponible: false,
+    visible: true
   },
   {
     nombre: "Salvo edp",
@@ -588,7 +599,8 @@ const perfumes = [
     decants: { "5":60, "10":100 },
     precioEntero: 800,
     moneda: "MXN",
-    disponible: true
+    disponible: true,
+    visible: true
   }
 ];
 
@@ -610,8 +622,10 @@ function showSkeletons(){
 function renderGrid(){
 
   // 1️⃣ separar disponibles y agotados (sin cambiar tu orden)
-  const disponibles = perfumes.filter(p => p.disponible);
-  const agotados = perfumes.filter(p => !p.disponible);
+const visibles = perfumes.filter(p => p.visible !== false);
+
+const disponibles = visibles.filter(p => p.disponible);
+const agotados = visibles.filter(p => !p.disponible);
 
   // 2️⃣ unir: disponibles primero, agotados al final
   const ordenados = [...disponibles, ...agotados];
@@ -752,10 +766,3 @@ function vibrate(){
 
 </body>
 </html>
-
-
-
-
-
-
-
