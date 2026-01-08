@@ -9,6 +9,26 @@
   gtag('js', new Date());
 
   gtag('config', 'G-BTY4DX5FRR');
+function openOffer(){
+  vibrate();
+  document.getElementById("offerModal").classList.add("show");
+  document.body.style.overflow = "hidden";
+}
+
+function closeOffer(){
+  document.getElementById("offerModal").classList.remove("show");
+  document.body.style.overflow = "";
+}
+document.addEventListener("DOMContentLoaded", () => {
+  const offerSeen = localStorage.getItem("offerSeen");
+
+  if (!offerSeen) {
+    setTimeout(() => {
+      openOffer();
+      localStorage.setItem("offerSeen", "true");
+    }, 1200); // 1.2 segundos
+  }
+});
 </script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -412,6 +432,106 @@ body{
   user-select: none;
   -webkit-user-select: none;
 }
+/* ===== BOTÓN OFERTA FLOTANTE ===== */
+.offer-fixed{
+  position: fixed;
+  bottom: 80px;
+  right: 18px;
+  background: linear-gradient(135deg,#f43f5e,#e11d48);
+  color: #fff;
+  padding: 14px 20px;
+  border-radius: 999px;
+  font-weight: 900;
+  letter-spacing: .5px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(0,0,0,.45);
+  z-index: 1500;
+  animation: pulseOffer 1.8s infinite;
+}
+
+@keyframes pulseOffer{
+  0%{ transform: scale(1); }
+  50%{ transform: scale(1.06); }
+  100%{ transform: scale(1); }
+}
+/* ===== HERO OFERTA ===== */
+.hero-offer{
+  padding: 22px 14px;
+  background: radial-gradient(circle at top,#1f2937,#0b0d12);
+}
+
+.hero-box{
+  max-width: 900px;
+  margin: 0 auto;
+  background: linear-gradient(135deg,#f43f5e,#e11d48);
+  color: #fff;
+  border-radius: 22px;
+  padding: 26px 20px;
+  text-align: center;
+  box-shadow: 0 20px 45px rgba(0,0,0,.5);
+  animation: heroPop .6s ease;
+}
+
+@keyframes heroPop{
+  from{ transform: scale(.95); opacity:0; }
+  to{ transform: scale(1); opacity:1; }
+}
+
+.hero-badge{
+  display: inline-block;
+  background: rgba(255,255,255,.15);
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 12px;
+  letter-spacing: .6px;
+}
+
+.hero-box h2{
+  margin: 14px 0 6px;
+  font-size: 26px;
+}
+
+.hero-sub{
+  margin: 0;
+  font-size: 14px;
+  opacity: .9;
+}
+
+.hero-price{
+  margin: 14px 0 18px;
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.hero-btn{
+  background: #fff;
+  color: #e11d48;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .2s ease;
+}
+
+.hero-btn:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(0,0,0,.35);
+}
+
+.hero-btn:active{
+  transform: scale(.95);
+}
+
+/* Mobile */
+@media(max-width:600px){
+  .hero-box h2{ font-size: 22px; }
+  .hero-price{ font-size: 20px; }
+}
+
 
 
 
@@ -436,6 +556,26 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <h1>Perfumería</h1>
   <p>Decants y perfumes originales</p>
 </header>
+<!-- ===== HERO OFERTA ===== -->
+<section class="hero-offer">
+  <div class="hero-box">
+    <span class="hero-badge">🔥 OFERTA DESTACADA</span>
+
+    <h2>Jean Paul Gaultier</h2>
+    <p class="hero-sub">
+      30 ml en decants seleccionados
+    </p>
+
+    <p class="hero-price">
+      Solo <strong>$750 MXN</strong>
+    </p>
+
+    <button class="hero-btn" onclick="openOffer()">
+      Ver oferta
+    </button>
+  </div>
+</section>
+
 
 
 <div class="wrap">
@@ -448,6 +588,34 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <div id="modalContent"></div>
   </div>
 </div>
+<!-- ===== MODAL OFERTA ===== -->
+<div id="offerModal" class="modal">
+  <div class="modal-box">
+    <button class="close" onclick="closeOffer()">✕</button>
+
+    <h2>🔥 OFERTA ESPECIAL</h2>
+    <p class="muted">Jean Paul Gaultier • Edición decants</p>
+
+    <img src="img/jpg-offer.png" class="detail-img" alt="Oferta JPG">
+
+    <p style="font-weight:700;margin-top:10px">
+      30 ml TOTAL por solo <span style="color:var(--accent)">$750 MXN</span>
+    </p>
+
+    <ul class="muted" style="margin-top:10px">
+      <li>10 ml Le Male Elixir</li>
+      <li>10 ml Ultra Male</li>
+      <li>10 ml Paradise Garden</li>
+    </ul>
+
+    <a class="btn"
+       href="https://wa.me/527671033923?text=Hola,%20quiero%20la%20OFERTA%20Jean%20Paul%20Gaultier%2030ml%20por%20$750"
+       target="_blank">
+      Pedir oferta por WhatsApp
+    </a>
+  </div>
+</div>
+
 
 <div id="imgViewer" class="img-viewer" onclick="closeImage()">
   <button class="img-close" onclick="closeImage()">✕</button>
@@ -780,6 +948,7 @@ function openDetail(i){
 
 }
 
+
 function closeDetail(){
   modal.classList.remove("show");
   document.body.style.overflow = "";
@@ -833,7 +1002,9 @@ function vibrate(){
    target="_blank">
   WhatsApp
 </a>
-
+<button class="offer-fixed" onclick="openOffer()">
+  OFERTA
+</button>
 <!-- ===== FOOTER ===== -->
 <footer class="footer">
   <p>© 2025 Perfumería</p>
@@ -842,25 +1013,3 @@ function vibrate(){
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
