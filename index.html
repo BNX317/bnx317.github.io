@@ -636,31 +636,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     </button>
   </div>
 </section>
-<section class="hero-offer">
-  <div class="hero-box" style="background: linear-gradient(135deg,#22c55e,#16a34a);">
-    <span class="hero-badge">💚 OFERTA ESPECIAL</span>
 
-    <h2>Pack Afnan & Armaf</h2>
-
-    <div class="hero-price blink-offer">
-      <div style="font-size:14px; font-weight:700; opacity:.9">
-        4 decants seleccionados (5 ml c/u)
-      </div>
-
-      <div style="margin-top:6px">
-        <span style="text-decoration:line-through; opacity:.8; font-size:16px;">
-          $240 MXN
-        </span>
-        <br>
-        <strong style="font-size:26px;">$200 MXN</strong>
-      </div>
-    </div>
-
-    <button class="hero-btn" onclick="openOffer2()">
-      Ver promoción
-    </button>
-  </div>
-</section>
 
 
 
@@ -880,7 +856,7 @@ const perfumes = [
     precioEntero: "",
     moneda: "MXN",
     disponible: false,
-    visible: true
+    visible: false
   },
   {
     nombre: "Hawas For Him",
@@ -903,9 +879,8 @@ const perfumes = [
     decants: { "5":70, "10":120 },
     precioEntero:"",
     moneda: "MXN",
-    disponible: false,
-    visible: false
-  
+    disponible: true,
+    visible: true
   },
   {
     nombre: "9 PM",
@@ -1172,6 +1147,3 @@ if(resenasGrid){
 
 </body>
 </html>
-
-
-
