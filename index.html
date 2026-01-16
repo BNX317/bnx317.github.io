@@ -473,6 +473,30 @@ body{
   height: 100%;
   object-fit: cover;
 }
+.separator{
+  grid-column: 1 / -1;
+  text-align: center;
+  margin: 30px 0 14px;
+  font-weight: 900;
+  font-size: 15px;
+  letter-spacing: .08em;
+  color: var(--accent);
+  position: relative;
+}
+
+.separator::before,
+.separator::after{
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 35%;
+  height: 1px;
+  background: var(--border);
+}
+
+.separator::before{ left: 0; }
+.separator::after{ right: 0; }
+
 
 
 
@@ -535,6 +559,7 @@ const perfumes = [
     nombre: "Acqua di Gió Profundo Parfum",
     marca: "Giorgio Armani",
     genero: "Hombre",
+    tipo: "designer",
     imagen: "img/adpp.png",
     imagenDetalle: "img/aqdppd.png",
     decants: { "5":150, "10":280 },
@@ -547,6 +572,7 @@ const perfumes = [
     nombre: "Scandal Pour Homme Absolu",
     marca: "Jean Paul Gaultier",
     genero: "Hombre",
+    tipo: "designer",
     imagen: "img/sca.png",
     imagenDetalle: "img/scad.png",
     decants: { "5":160, "10":300 },
@@ -559,21 +585,10 @@ const perfumes = [
     nombre: "Le Male Elixir",
     marca: "Jean Paul Gaultier",
     genero: "Hombre",
+    tipo: "designer",
     imagen: "img/elixirx.png",
     imagenDetalle: "img/elixird.png",
-    decants: { "5":160, "10":300 },
-    precioEntero: "",
-    moneda: "MXN",
-    disponible: true,
-    visible: true
-  },
-    {
-    nombre: "Le Beau Paradise Garden",
-    marca: "Jean Paul Gaultier",
-    genero: "Hombre",
-    imagen: "img/lebeau-card.png",
-    imagenDetalle: "img/lebeau-detalle.png",
-    decants: { "5":150, "10":280 },
+    decants: { "5":140, "10":250 },
     precioEntero: "",
     moneda: "MXN",
     disponible: true,
@@ -583,9 +598,23 @@ const perfumes = [
     nombre: "Ultra Male",
     marca: "Jean Paul Gaultier",
     genero: "Hombre",
+    tipo: "designer",
     imagen: "img/ultra.png",
     imagenDetalle: "img/ultrad.png",
-    decants: { "5":140, "10":250 },
+    decants: { "5":120, "10":220 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: true,
+    visible: true
+  },
+  {
+    nombre: "Le Beau Paradise Garden",
+    marca: "Jean Paul Gaultier",
+    genero: "Hombre",
+    tipo: "designer",
+    imagen: "img/lebeau-card.png",
+    imagenDetalle: "img/lebeau-detalle.png",
+    decants: { "5":130, "10":240 },
     precioEntero: "",
     moneda: "MXN",
     disponible: true,
@@ -595,9 +624,10 @@ const perfumes = [
     nombre: "Azzaro The Most Wanted Intense",
     marca: "Azzaro",
     genero: "Hombre",
+    tipo: "designer",
     imagen: "img/az.png",
     imagenDetalle: "img/azd.png",
-    decants: { "5":120, "10":200 },
+    decants: { "5":120, "10":240 },
     precioEntero: "",
     moneda: "MXN",
     disponible: false,
@@ -607,6 +637,7 @@ const perfumes = [
     nombre: "Versace Eros Flame",
     marca: "Versace",
     genero: "Hombre",
+    tipo: "designer",
     imagen: "img/ef.png",
     imagenDetalle: "img/efd.png",
     decants: { "5":130, "10":240 },
@@ -619,9 +650,10 @@ const perfumes = [
     nombre: "Versace Eros EDP",
     marca: "Versace",
     genero: "Hombre",
+    tipo: "designer",
     imagen: "img/eros.png",
     imagenDetalle: "img/erosd.png",
-    decants: { "5":100, "10":180 },
+    decants: { "5":90, "10":160 },
     precioEntero: "",
     moneda: "MXN",
     disponible: true,
@@ -631,6 +663,7 @@ const perfumes = [
     nombre: "Bharara King",
     marca: "Bharara",
     genero: "Hombre",
+    tipo: "arab",
     imagen: "img/v.png",
     imagenDetalle: "img/vd.png",
     decants: { "5":110, "10":200 },
@@ -644,9 +677,10 @@ const perfumes = [
     nombre: "Hawas Fire",
     marca: "Rasasi",
     genero: "Hombre",
+    tipo: "arab",
     imagen: "img/hf.png",
     imagenDetalle: "img/hfd.png",
-    decants: { "5":120, "10":200 },
+    decants: { "5":100, "10":180 },
     precioEntero: "",
     moneda: "MXN",
     disponible: false,
@@ -656,6 +690,7 @@ const perfumes = [
     nombre: "Hawas ice",
     marca: "Rasasi",
     genero: "Hombre",
+    tipo: "arab",
     imagen: "img/hawas.png",
     imagenDetalle: "img/hawasd.png",
     decants: { "5":80, "10":140 },
@@ -668,6 +703,7 @@ const perfumes = [
     nombre: "Hawas For Him",
     marca: "Rasasi",
     genero: "Hombre",
+    tipo: "arab",
     imagen: "img/hawasf.png",
     imagenDetalle: "img/hawasfd.png",
     decants: { "5":80, "10":140 },
@@ -680,6 +716,7 @@ const perfumes = [
     nombre: "Nitro Red",
     marca: "Dumont",
     genero: "Hombre",
+    tipo: "arab",
     imagen: "img/n.png",
     imagenDetalle: "img/nd.png",
     decants: { "5":70, "10":120 },
@@ -692,6 +729,7 @@ const perfumes = [
     nombre: "Khamrah",
     marca: "Lattfa",
     genero: "Hombre",
+    tipo: "arab",
     imagen: "img/k.png",
     imagenDetalle: "img/kd.png",
     decants: { "5":70, "10":120 },
@@ -704,6 +742,7 @@ const perfumes = [
     nombre: "9 PM",
     marca: "Afnan",
     genero: "Hombre",
+    tipo: "arab",
     imagen: "img/9pm.png",
     imagenDetalle: "img/9pmd.png",
     decants: { "5":60, "10":100 },
@@ -716,6 +755,7 @@ const perfumes = [
     nombre: "9 AM",
     marca: "Afnan",
     genero: "Hombre",
+    tipo: "arab",
     imagen: "img/9am.png",
     imagenDetalle: "img/9amd.png",
     decants: { "5":60, "10":100 },
@@ -728,6 +768,7 @@ const perfumes = [
     nombre: "9 PM Rebel",
     marca: "Afnan",
     genero: "Hombre",
+    tipo: "arab",
     imagen: "img/9pmr.png",
     imagenDetalle: "img/9pmrd.png",
     decants: { "5":80, "10":140 },
@@ -740,6 +781,7 @@ const perfumes = [
     nombre: "Odyssey Artisto",
     marca: "Armaf",
     genero: "Hombre",
+    tipo: "arab",
     imagen: "img/oa.png",
     imagenDetalle: "img/oad.png",
     decants: { "5":80, "10":140 },
@@ -752,6 +794,7 @@ const perfumes = [
     nombre: "Odyssey Mandarin Sky",
     marca: "Armaf",
     genero: "Hombre",
+    tipo: "arab",
     imagen: "img/sky.png",
     imagenDetalle: "img/skyd.png",
     decants: { "5":60, "10":100 },
@@ -764,6 +807,7 @@ const perfumes = [
     nombre: "Oddyssey Aqua Men",
     marca: "Armaf",
     genero: "Hombre",
+    tipo: "arab",
     imagen: "img/oq.png",
     imagenDetalle: "img/oqd.png",
     decants: { "5":60, "10":100 },
@@ -776,6 +820,7 @@ const perfumes = [
     nombre: "Salvo edp",
     marca: "Maison Alhambra",
     genero: "Hombre",
+    tipo: "arab",
     imagen: "img/s.png",
     imagenDetalle: "img/sd.png",
     decants: { "5":60, "10":100 },
@@ -800,20 +845,8 @@ function showSkeletons(){
     </div>
   `).join("");
 }
-
-function renderGrid(){
-
-  // 1️⃣ separar disponibles y agotados (sin cambiar tu orden)
-const visibles = perfumes.filter(p => p.visible !== false);
-
-const disponibles = visibles.filter(p => p.disponible);
-const agotados = visibles.filter(p => !p.disponible);
-
-  // 2️⃣ unir: disponibles primero, agotados al final
-  const ordenados = [...disponibles, ...agotados];
-
-  // 3️⃣ renderizar
-  grid.innerHTML = ordenados.map((p,i)=>`
+function cardHTML(p,i){
+  return `
     <article class="card ${!p.disponible ? 'agotado' : ''}"
       style="animation-delay:${i * 70}ms"
       ${p.disponible ? `onclick="openDetail(${perfumes.indexOf(p)})"` : ''}>
@@ -831,7 +864,33 @@ const agotados = visibles.filter(p => !p.disponible);
         </div>
       </div>
     </article>
-  `).join("");
+  `;
+}
+
+function renderGrid(){
+
+  const visibles = perfumes.filter(p => p.visible !== false);
+
+  const designer = visibles.filter(p => p.tipo === "designer");
+  const arabes = visibles.filter(p => p.tipo === "arab");
+
+  let html = "";
+
+  if(designer.length){
+    html += `
+      <div class="separator">DISEÑADOR</div>
+      ${designer.map((p,i)=>cardHTML(p,i)).join("")}
+    `;
+  }
+
+  if(arabes.length){
+    html += `
+      <div class="separator">ÁRABES</div>
+      ${arabes.map((p,i)=>cardHTML(p,i + designer.length)).join("")}
+    `;
+  }
+
+  grid.innerHTML = html;
 }
 
 showSkeletons();
@@ -962,6 +1021,7 @@ function vibrate(){
 const resenas = [
   "resenas/r1.jpg",
   "resenas/r2.jpg"
+  "resenas/r3.jpg"
 ];
 
 const resenasGrid = document.getElementById("resenasGrid");
@@ -977,4 +1037,3 @@ if(resenasGrid){
 
 </body>
 </html>
-
