@@ -565,6 +565,7 @@ const perfumes = [
     decants: { "5":150, "10":280 },
     precioEntero: "",
     moneda: "MXN",
+    disponibleHasta: "2026-01-30 18:00",
     disponible: false,
     visible: true
   },
@@ -591,6 +592,7 @@ const perfumes = [
     decants: { "5":150, "10":280 },
     precioEntero: "",
     moneda: "MXN",
+    disponibleHasta: "2026-02-07 18:00",
     disponible: false,
     visible: true
   },
@@ -643,6 +645,7 @@ const perfumes = [
     decants: { "5":120, "10":240 },
     precioEntero: "",
     moneda: "MXN",
+    disponibleHasta: "2026-01-30 18:00",
     disponible: false,
     visible: true
   },
@@ -800,6 +803,7 @@ const perfumes = [
     decants: { "5":80, "10":140 },
     precioEntero: "",
     moneda: "MXN",
+    disponibleHasta: "2026-01-31 18:00",
     disponible: false,
     visible: true
   },
@@ -864,7 +868,19 @@ function cardHTML(p,i){
       style="animation-delay:${i * 70}ms"
       ${p.disponible ? `onclick="openDetail(${perfumes.indexOf(p)})"` : ''}>
 
-      ${!p.disponible ? `<div class="agotado-badge">AGOTADO</div>` : ''}
+      ${
+  !p.disponible
+    ? `<div class="agotado-badge">
+        AGOTADO
+        ${p.disponibleHasta && timeLeft(p.disponibleHasta)
+          ? `<div style="font-size:10px;margin-top:2px;">
+              Disponible en ${timeLeft(p.disponibleHasta)}
+            </div>`
+          : ''}
+      </div>`
+    : ''
+}
+
 
       <div class="img">
         <img src="${p.imagen}" alt="${p.nombre}">
@@ -912,6 +928,21 @@ setTimeout(()=>{
   renderGrid();
 }, 300); // 0.9 segundos solo para prueba
 
+setInterval(()=>{
+  let updated = false;
+
+  perfumes.forEach(p=>{
+    if(!p.disponible && p.disponibleHasta){
+      if(new Date(p.disponibleHasta) <= new Date()){
+        p.disponible = true;
+        delete p.disponibleHasta;
+        updated = true;
+      }
+    }
+  });
+
+  if(updated) renderGrid();
+}, 60000); // revisa cada 1 minuto
 
 let selectedIndex = null;
 
@@ -1003,6 +1034,17 @@ document.addEventListener("keydown",e=>{
 function vibrate(){
   if(navigator.vibrate) navigator.vibrate(20);
 }
+function timeLeft(date){
+  const diff = new Date(date) - new Date();
+  if(diff <= 0) return null;
+
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor(diff % 86400000 / 3600000);
+  const m = Math.floor(diff % 3600000 / 60000);
+
+  return `${d}d ${h}h ${m}m`;
+}
+
 
 
 </script>
@@ -1052,9 +1094,3 @@ if(resenasGrid){
 
 </body>
 </html>
-
-
-
-
-
-
