@@ -496,6 +496,38 @@ body{
 
 .separator::before{ left: 0; }
 .separator::after{ right: 0; }
+/* ===== SEPARADOR NICHO PREMIUM ===== */
+.separator-nicho{
+  grid-column: 1 / -1;
+  margin: 32px 0 18px;
+  padding: 16px;
+  text-align: center;
+  border-radius: 18px;
+  background: linear-gradient(
+    135deg,
+    rgba(255,215,0,.15),
+    rgba(255,255,255,.05)
+  );
+  border: 1px solid rgba(255,215,0,.35);
+  box-shadow: 0 10px 30px rgba(0,0,0,.45);
+}
+
+.separator-nicho h3{
+  margin: 0;
+  font-size: 16px;
+  letter-spacing: .15em;
+  font-weight: 900;
+  color: #ffd700;
+}
+
+.separator-nicho p{
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.card.nicho{
+  border: 1px solid rgba(255,215,0,.45);
+}
 
 
 
@@ -554,6 +586,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 const WHATSAPP_NUMBER = "527671033923";
 
 const perfumes = [
+    {
+    nombre: "Layton Parfums de Marly",
+    marca: "Parfums de Marly",
+    genero: "Hombre",
+    tipo: "nicho",
+    imagen: "img/Layton.png",
+    imagenDetalle: "img/Laytond.png",
+    decants: { "5":300, "10":500 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: true,
+    visible: true
+  },
   {
     nombre: "Acqua di Giò Parfum",
     marca: "Giorgio Armani",
@@ -944,22 +989,25 @@ function showSkeletons(){
 }
 function cardHTML(p,i){
   return `
-    <article class="card ${!p.disponible ? 'agotado' : ''}"
+    <article class="card 
+      ${!p.disponible ? 'agotado' : ''} 
+      ${p.tipo === 'nicho' ? 'nicho' : ''}"
       style="animation-delay:${i * 70}ms"
       ${p.disponible ? `onclick="openDetail(${perfumes.indexOf(p)})"` : ''}>
 
       ${
-  !p.disponible
-    ? `<div class="agotado-badge">
-        AGOTADO
-        ${p.disponibleHasta && timeLeft(p.disponibleHasta)
-          ? `<div style="font-size:10px;margin-top:2px;">
-              Disponible en ${timeLeft(p.disponibleHasta)}
+        !p.disponible
+          ? `<div class="agotado-badge">
+              AGOTADO
+              ${p.disponibleHasta && timeLeft(p.disponibleHasta)
+                ? `<div style="font-size:10px;margin-top:2px;">
+                    Disponible en ${timeLeft(p.disponibleHasta)}
+                  </div>`
+                : ''}
             </div>`
-          : ''}
-      </div>`
-    : ''
-}
+          : ''
+      }
+
 
 
       <div class="img">
@@ -980,27 +1028,39 @@ function renderGrid(){
 
   const visibles = perfumes.filter(p => p.visible !== false);
 
+  const nicho = visibles.filter(p => p.tipo === "nicho");
   const designer = visibles.filter(p => p.tipo === "designer");
   const arabes = visibles.filter(p => p.tipo === "arab");
 
   let html = "";
 
+  if(nicho.length){
+    html += `
+      <div class="separator-nicho">
+        <h3>PERFUMERÍA NICHO</h3>
+        <p>Alta perfumería • Exclusivos • Calidad superior</p>
+      </div>
+      ${nicho.map((p,i)=>cardHTML(p,i)).join("")}
+    `;
+  }
+
   if(designer.length){
     html += `
       <div class="separator">DISEÑADOR</div>
-      ${designer.map((p,i)=>cardHTML(p,i)).join("")}
+      ${designer.map((p,i)=>cardHTML(p,i + nicho.length)).join("")}
     `;
   }
 
   if(arabes.length){
     html += `
       <div class="separator">ÁRABES</div>
-      ${arabes.map((p,i)=>cardHTML(p,i + designer.length)).join("")}
+      ${arabes.map((p,i)=>cardHTML(p,i + nicho.length + designer.length)).join("")}
     `;
   }
 
   grid.innerHTML = html;
 }
+
 
 showSkeletons();
 
@@ -1177,24 +1237,3 @@ if(resenasGrid){
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
