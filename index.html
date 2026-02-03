@@ -1,1 +1,1295 @@
+<!doctype html>
+<html lang="es">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BTY4DX5FRR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-BTY4DX5FRR');
+
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mis Perfumes</title>
+
+<style>
+:root{
+  --bg:#0b0d12; --card:#121826; --text:#e9eefc; --muted:#a9b4d0;
+  --accent:#6ee7ff; --border:rgba(255,255,255,.12);
+}
+*{box-sizing:border-box}
+
+body{
+  
+  margin:0; font-family:system-ui,Segoe UI,Arial;
+  background:linear-gradient(180deg,#080a10,#0b0d12);
+  color:var(--text);
+}
+
+.wrap{max-width:1050px;margin:0 auto;padding:18px}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:14px;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+  cursor:pointer;
+  max-width:260px;
+  margin:0 auto;
+  position:relative;
+  transition:transform .2s ease, box-shadow .2s ease;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp .5s ease forwards;
+}
+@keyframes fadeUp{
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+.card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 14px 30px rgba(0,0,0,.35);
+}
+.card:active{
+  transform: scale(0.97);
+}
+
+.card.agotado{
+  cursor:not-allowed;
+}
+.card.agotado::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.35);
+}
+.card:hover .img img{
+  transform: scale(1.08);
+}
+.agotado-badge{
+  position:absolute;
+  top:10px;
+  left:10px;
+  background:#e11d48;
+  color:#fff;
+  font-size:12px;
+  font-weight:800;
+  padding:4px 8px;
+  border-radius:999px;
+  z-index:2;
+}
+.img{
+  width:100%;
+  height:260px;           /* ALTURA FIJA */
+  background:#0f1422;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:14px;
+}
+
+.img img{
+  width:100%;
+  height:100%;
+  object-fit:cover;       /* CLAVE */
+  border-radius:12px;
+  transition: transform .3s ease;
+}
+
+.content{padding:10px}
+.name{font-weight:700;text-align:center}
+
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.7);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:1000;
+}
+.modal.show{display:flex}
+.modal-box{
+  background:var(--card);
+  width:92%;
+  max-width:520px;
+  padding:18px;
+  border-radius:16px;
+  position:relative;
+}
+.close{
+  position:absolute;
+  top:10px;
+  right:12px;
+  background:none;
+  border:none;
+  color:white;
+  font-size:18px;
+  cursor:pointer;
+}
+.detail-img{
+  width:100%;
+  max-height:340px;
+  object-fit:contain;
+  margin:12px 0;
+  cursor:zoom-in;
+}
+.muted{color:var(--muted);font-size:13px}
+
+/* ML */
+.ml-options button.active{
+  box-shadow: 0 0 0 2px rgba(110,231,255,.4);
+}
+.ml-options button{
+  padding:8px 14px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:none;
+  color:var(--text);
+  cursor:pointer;
+  font-weight:600;
+}
+.ml-options button.active{
+  background:rgba(110,231,255,.2);
+  border-color:rgba(110,231,255,.6);
+}
+
+/* PRECIOS */
+.prices{margin-top:8px}
+.price-decants{font-size:18px;font-weight:800}
+.price-full{font-size:13px;color:var(--muted)}
+
+.btn{
+  display:block;
+  margin-top:14px;
+  padding:12px;
+  text-align:center;
+  border-radius:12px;
+  border:1px solid rgba(110,231,255,.35);
+  background:rgba(110,231,255,.12);
+  color:var(--text);
+  text-decoration:none;
+  font-weight:700;
+}
+.btn.disabled{
+  opacity:.5;
+  pointer-events:none;
+}
+
+/* LIGHTBOX */
+.img-viewer{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.9);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:2000;
+}
+.img-viewer.show{display:flex}
+.img-viewer img{
+  max-width:90%;
+  max-height:90%;
+  object-fit:contain;
+  border-radius:12px;
+}
+.img-close{
+  position:absolute;
+  top:20px;
+  right:20px;
+  background:none;
+  border:none;
+  color:white;
+  font-size:24px;
+  cursor:pointer;
+}
+/* ===== HEADER PROFESIONAL ===== */
+.top{
+  position:sticky;
+  top:0;
+  z-index:900;
+  background:#0b0d12;
+  border-bottom:1px solid var(--border);
+  padding:14px;
+  text-align:center;
+}
+.top h1{
+  margin:0;
+  font-size:20px;
+}
+.top p{
+  margin:4px 0 0;
+  color:var(--muted);
+  font-size:13px;
+}
+/* ===== WHATSAPP FLOTANTE ===== */
+.wa-fixed{
+  position:fixed;
+  bottom:18px;
+  right:18px;
+  background:#22c55e;
+  color:white;
+  padding:14px 18px;
+  border-radius:999px;
+  text-decoration:none;
+  font-weight:800;
+  box-shadow:0 10px 25px rgba(0,0,0,.4);
+  z-index:1500;
+}
+/* ===== FOOTER ===== */
+.footer{
+  text-align:center;
+  padding:30px 10px;
+  color:var(--muted);
+  font-size:13px;
+}
+.modal-box{
+  animation: pop .25s ease;
+}
+
+@keyframes pop{
+  from{
+    transform: scale(.9);
+    opacity:0;
+  }
+  to{
+    transform: scale(1);
+    opacity:1;
+  }
+}
+.ml-options button{
+  transition: transform .15s ease, background .2s;
+}
+
+.ml-options button:active{
+  transform: scale(.92);
+}
+.btn:not(.disabled):hover{
+  box-shadow: 0 0 0 rgba(110,231,255,.7);
+  animation: glow 1.4s infinite;
+}
+
+@keyframes glow{
+  0%{ box-shadow:0 0 0 rgba(110,231,255,.7); }
+  70%{ box-shadow:0 0 25px rgba(110,231,255,.2); }
+  100%{ box-shadow:0 0 0 rgba(110,231,255,0); }
+}
+.wa-fixed{
+  animation: float 2.5s ease-in-out infinite;
+}
+
+@keyframes float{
+  0%,100%{ transform:translateY(0); }
+  50%{ transform:translateY(-6px); }
+}
+.card.agotado:hover{
+  transform:none;
+  box-shadow:none;
+}
+/* ===== MEJORA VISTA MÓVIL ===== */
+@media (max-width: 600px){
+
+  .grid{
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .card{
+    max-width: 100%;
+    border-radius: 12px;
+  }
+
+  .img{
+    height: 180px; /* imagen más baja */
+    padding: 10px;
+  }
+
+  .name{
+    font-size: 14px;
+    line-height: 1.2;
+  }
+
+  .content{
+    padding: 8px;
+  }
+
+  .agotado-badge{
+    font-size: 10px;
+    padding: 3px 6px;
+  }
+
+  .wa-fixed{
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+}
+.price-from{
+  margin-top: 4px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  font-size: 12px;
+}
+/* ===== SKELETON LOADER ===== */
+.skeleton{
+  background: var(--card);
+  border-radius: 14px;
+  padding: 10px;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.skeleton-img{
+  height: 180px;
+  background: #1f2937;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.skeleton-text{
+  height: 14px;
+  background: #1f2937;
+  border-radius: 6px;
+  margin: 6px auto;
+  width: 80%;
+}
+
+.skeleton-price{
+  height: 12px;
+  background: #1f2937;
+  border-radius: 6px;
+  width: 40%;
+  margin: 6px auto;
+}
+
+@keyframes pulse{
+  0%{ opacity: .6; }
+  50%{ opacity: 1; }
+  100%{ opacity: .6; }
+}
+/* ===== INDICADOR CLICK CARD ===== */
+.card::before{
+  content: "Ver detalles";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,.45);
+  color: #fff;
+  font-weight: 800;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity .25s ease;
+  z-index: 5;              /* 👈 MUY IMPORTANTE */
+  pointer-events: none;
+}
+
+.card:hover::before,
+.card:active::before,
+.card:focus-within::before{
+  opacity: 1;
+}
+
+/* No mostrar en agotados */
+.card.agotado::before{
+  display: none;
+}
+/* Quitar highlight azul en móvil */
+*{
+  -webkit-tap-highlight-color: transparent;
+}
+.card{
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Mobile */
+@media(max-width:600px){
+  .hero-box h2{ font-size: 22px; }
+  .hero-price{ font-size: 20px; }
+}
+@keyframes softBlink {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.02);
+  }
+}
+
+.blink-offer {
+  animation: softBlink 1.6s ease-in-out infinite;
+}
+/* ===== RESEÑAS ===== */
+.review-card{
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .2s ease;
+}
+
+.review-card:hover{
+  transform: translateY(-4px);
+}
+
+.review-card img{
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+}
+.review-card{
+  max-width: 260px;
+  aspect-ratio: 3 / 4;
+  background: #0f1115;
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(0,0,0,.45);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.review-card:hover{
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(0,0,0,.6);
+}
+
+.review-card img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.separator{
+  grid-column: 1 / -1;
+  text-align: center;
+  margin: 30px 0 14px;
+  font-weight: 900;
+  font-size: 15px;
+  letter-spacing: .08em;
+  color: var(--accent);
+  position: relative;
+}
+
+.separator::before,
+.separator::after{
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 35%;
+  height: 1px;
+  background: var(--border);
+}
+
+.separator::before{ left: 0; }
+.separator::after{ right: 0; }
+/* ===== SEPARADOR NICHO PREMIUM ===== */
+.separator-nicho{
+  grid-column: 1 / -1;
+  margin: 32px 0 18px;
+  padding: 16px;
+  text-align: center;
+  border-radius: 18px;
+  background: linear-gradient(
+    135deg,
+    rgba(255,215,0,.15),
+    rgba(255,255,255,.05)
+  );
+  border: 1px solid rgba(255,215,0,.35);
+  box-shadow: 0 10px 30px rgba(0,0,0,.45);
+}
+
+.separator-nicho h3{
+  margin: 0;
+  font-size: 16px;
+  letter-spacing: .15em;
+  font-weight: 900;
+  color: #ffd700;
+}
+
+.separator-nicho p{
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.card.nicho{
+  border: 1px solid rgba(255,215,0,.45);
+}
+
+
+
+
+
+
+
+
+</style>
+<!-- Google Tag Manager -->
+<script>
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-M3R26DV2');
+</script>
+<!-- End Google Tag Manager -->
+
+</head>
+
+<body>
+
+  <!-- ===== HEADER PROFESIONAL ===== -->
+<header class="top">
+  <h1>Perfumería</h1>
+  <p>Decants y perfumes originales</p>
+</header>
+
+
+
+
+
+
+
+<div class="wrap">
+  <div id="grid" class="grid"></div>
+</div>
+
+<div id="modal" class="modal">
+  <div class="modal-box">
+    <button class="close" onclick="closeDetail()">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+
+
+
+<div id="imgViewer" class="img-viewer" onclick="closeImage()">
+  <button class="img-close" onclick="closeImage()">✕</button>
+  <img id="imgViewerContent">
+</div>
+
+<script>
+const WHATSAPP_NUMBER = "527671033923";
+
+const perfumes = [
+    {
+    nombre: "Layton Parfums de Marly",
+    marca: "Parfums de Marly",
+    genero: "Hombre",
+    tipo: "nicho",
+    imagen: "img/Layton.png",
+    imagenDetalle: "img/Laytond.png",
+    decants: { "5":300, "10":500 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: true,
+    visible: true
+  },
+  {
+    nombre: "Valentino Uomo Born In Roma Coral Fantasy",
+    marca: "Valentino",
+    genero: "Hombre",
+    tipo: "designer",
+    imagen: "img/vcf.png",
+    imagenDetalle: "img/vcfd.png",
+    decants: { "5":180, "10":340 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: true,
+    visible: true
+  },
+  {
+    nombre: "Acqua di Giò Parfum",
+    marca: "Giorgio Armani",
+    genero: "Hombre",
+    tipo: "designer",
+    imagen: "img/adp.png",
+    imagenDetalle: "img/adpd.png",
+    decants: { "5":180, "10":340 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: true,
+    visible: true
+  },
+  {
+    nombre: "Acqua di Gió Profundo Parfum",
+    marca: "Giorgio Armani",
+    genero: "Hombre",
+    tipo: "designer",
+    imagen: "img/adpp.png",
+    imagenDetalle: "img/aqdppd.png",
+    decants: { "5":150, "10":280 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: true,
+    visible: true
+  },
+  {
+    nombre: "Invictus Victory Elixir",
+    marca: "Paco Rabanne",
+    genero: "Hombre",
+    tipo: "designer",
+    imagen: "img/invicd.png",
+    imagenDetalle: "img/invic.png",
+    decants: { "5":150, "10":280 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: true,
+    visible: true
+  },
+  {
+    nombre: "Scandal Pour Homme Absolu",
+    marca: "Jean Paul Gaultier",
+    genero: "Hombre",
+    tipo: "designer",
+    imagen: "img/sca.png",
+    imagenDetalle: "img/scad.png",
+    decants: { "5":160, "10":300 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: true,
+    visible: true
+  },
+    {
+    nombre: "Scandal Pour Homme Le Parfum",
+    marca: "Jean Paul Gaultier",
+    genero: "Hombre",
+    tipo: "designer",
+    imagen: "img/slp.png",
+    imagenDetalle: "img/slpd.png",
+    decants: { "5":150, "10":280 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponibleHasta: "2026-02-07 18:00",
+    disponible: false,
+    visible: true
+  },
+  {
+    nombre: "Le Male Elixir",
+    marca: "Jean Paul Gaultier",
+    genero: "Hombre",
+    tipo: "designer",
+    imagen: "img/elixirx.png",
+    imagenDetalle: "img/elixird.png",
+    decants: { "5":160, "10":300 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: false,
+    visible: false
+  },
+  {
+    nombre: "Ultra Male",
+    marca: "Jean Paul Gaultier",
+    genero: "Hombre",
+    tipo: "designer",
+    imagen: "img/ultra.png",
+    imagenDetalle: "img/ultrad.png",
+    decants: { "5":140, "10":250 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: true,
+    visible: true
+  },
+  {
+    nombre: "Le Beau Paradise Garden",
+    marca: "Jean Paul Gaultier",
+    genero: "Hombre",
+    tipo: "designer",
+    imagen: "img/lebeau-card.png",
+    imagenDetalle: "img/lebeau-detalle.png",
+    decants: { "5":140, "10":250 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: false,
+    visible: false
+  },
+   {
+    nombre: "Azzaro The Most Wanted Intense",
+    marca: "Azzaro",
+    genero: "Hombre",
+    tipo: "designer",
+    imagen: "img/az.png",
+    imagenDetalle: "img/azd.png",
+    decants: { "5":120, "10":200 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: false,
+    visible: false
+  },
+   {
+    nombre: "Versace Eros Energy",
+    marca: "Versace",
+    genero: "Hombre",
+    tipo: "designer",
+    imagen: "img/ee.png",
+    imagenDetalle: "img/eed.png",
+    decants: { "5":140, "10":260 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: true,
+    visible: true
+  },
+  {
+    nombre: "Versace Eros Flame",
+    marca: "Versace",
+    genero: "Hombre",
+    tipo: "designer",
+    imagen: "img/ef.png",
+    imagenDetalle: "img/efd.png",
+    decants: { "5":130, "10":220 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: true,
+    visible: true
+  },
+  {
+    nombre: "Versace Eros EDP",
+    marca: "Versace",
+    genero: "Hombre",
+    tipo: "designer",
+    imagen: "img/eros.png",
+    imagenDetalle: "img/erosd.png",
+    decants: { "5":100, "10":180 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: true,
+    visible: false
+  },
+  {
+    nombre: "Vulcan Feu",
+    marca: "French Avenue",
+    genero: "Hombre",
+    tipo: "arab",
+    imagen: "img/vulcan.png",
+    imagenDetalle: "img/vulcand.png",
+    decants: { "5":100, "10":180 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: true,
+    visible: true
+  },
+  {
+    nombre: "Bharara King",
+    marca: "Bharara",
+    genero: "Hombre",
+    tipo: "arab",
+    imagen: "img/v.png",
+    imagenDetalle: "img/vd.png",
+    decants: { "5":110, "10":200 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: true,
+    visible: true
+  },
+    {
+    nombre: "Hawas Kobra",
+    marca: "Rasasi",
+    genero: "Hombre",
+    tipo: "arab",
+    imagen: "img/hk.png",
+    imagenDetalle: "img/hkd.png",
+    decants: { "5":110, "10":200 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: false,
+    visible: true
+  },
+  {
+    nombre: "Hawas Fire",
+    marca: "Rasasi",
+    genero: "Hombre",
+    tipo: "arab",
+    imagen: "img/hf.png",
+    imagenDetalle: "img/hfd.png",
+    decants: { "5":100, "10":180 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: true,
+    visible: true
+  },
+  {
+    nombre: "Hawas ice",
+    marca: "Rasasi",
+    genero: "Hombre",
+    tipo: "arab",
+    imagen: "img/hawas.png",
+    imagenDetalle: "img/hawasd.png",
+    decants: { "5":80, "10":140 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: true,
+    visible: true
+  },
+  {
+    nombre: "Hawas For Him",
+    marca: "Rasasi",
+    genero: "Hombre",
+    tipo: "arab",
+    imagen: "img/hawasf.png",
+    imagenDetalle: "img/hawasfd.png",
+    decants: { "5":80, "10":140 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: false,
+    visible: false
+  },
+  {
+    nombre: "Nitro Red",
+    marca: "Dumont",
+    genero: "Hombre",
+    tipo: "arab",
+    imagen: "img/n.png",
+    imagenDetalle: "img/nd.png",
+    decants: { "5":70, "10":120 },
+    precioEntero:"",
+    moneda: "MXN",
+    disponible: false,
+    visible: false
+  },
+  {
+    nombre: "Khamrah Qahwa",
+    marca: "Lattfa",
+    genero: "Hombre",
+    tipo: "arab",
+    imagen: "img/kq.png",
+    imagenDetalle: "img/kqd.png",
+    decants: { "5":70, "10":120 },
+    precioEntero:"",
+    moneda: "MXN",
+    disponible: true,
+    visible: true
+  },
+  {
+    nombre: "Khamrah",
+    marca: "Lattfa",
+    genero: "Hombre",
+    tipo: "arab",
+    imagen: "img/k.png",
+    imagenDetalle: "img/kd.png",
+    decants: { "5":60, "10":100 },
+    precioEntero:"",
+    moneda: "MXN",
+    disponible: false,
+    visible: false
+  },
+   {
+    nombre: "Fakhar Black",
+    marca: "Lattfa",
+    genero: "Hombre",
+    tipo: "arab",
+    imagen: "img/fk.png",
+    imagenDetalle: "img/fkd.png",
+    decants: { "5":60, "10":100 },
+    precioEntero:"",
+    moneda: "MXN",
+    disponible: false,
+    visible: false
+  },
+  {
+    nombre: "9 PM",
+    marca: "Afnan",
+    genero: "Hombre",
+    tipo: "arab",
+    imagen: "img/9pm.png",
+    imagenDetalle: "img/9pmd.png",
+    decants: { "5":60, "10":100 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: true,
+    visible: true
+  },
+  {
+    nombre: "9 AM",
+    marca: "Afnan",
+    genero: "Hombre",
+    tipo: "arab",
+    imagen: "img/9am.png",
+    imagenDetalle: "img/9amd.png",
+    decants: { "5":60, "10":100 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: false,
+    visible: false  
+  },
+  {
+    nombre: "9 PM Rebel",
+    marca: "Afnan",
+    genero: "Hombre",
+    tipo: "arab",
+    imagen: "img/9pmr.png",
+    imagenDetalle: "img/9pmrd.png",
+    decants: { "5":80, "10":140 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: false,
+    visible: false
+  },
+  {
+    nombre: "Odyssey Artisto",
+    marca: "Armaf",
+    genero: "Hombre",
+    tipo: "arab",
+    imagen: "img/oa.png",
+    imagenDetalle: "img/oad.png",
+    decants: { "5":80, "10":140 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: false,
+    visible: false
+  },
+    {
+    nombre: "Odyssey Limoni",
+    marca: "Armaf",
+    genero: "Hombre",
+    tipo: "arab",
+    imagen: "img/odl.png",
+    imagenDetalle: "img/odld.png",
+    decants: { "5":60, "10":100 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: false,
+    visible: true
+  },
+  {
+    nombre: "Odyssey Mandarin Sky",
+    marca: "Armaf",
+    genero: "Hombre",
+    tipo: "arab",
+    imagen: "img/sky.png",
+    imagenDetalle: "img/skyd.png",
+    decants: { "5":60, "10":100 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: true,
+    visible: true
+  },
+  {
+    nombre: "Oddyssey Aqua Men",
+    marca: "Armaf",
+    genero: "Hombre",
+    tipo: "arab",
+    imagen: "img/oq.png",
+    imagenDetalle: "img/oqd.png",
+    decants: { "5":60, "10":100 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: false,
+    visible: false
+  },
+  {
+    nombre: "Salvo edp",
+    marca: "Maison Alhambra",
+    genero: "Hombre",
+    tipo: "arab",
+    imagen: "img/s.png",
+    imagenDetalle: "img/sd.png",
+    decants: { "5":60, "10":100 },
+    precioEntero: "",
+    moneda: "MXN",
+    disponible: true,
+    visible: true
+  }
+];
+
+const grid = document.getElementById("grid");
+const modal = document.getElementById("modal");
+const modalContent = document.getElementById("modalContent");
+
+const money = (n,m)=>new Intl.NumberFormat("es-MX",{style:"currency",currency:m}).format(n);
+function showSkeletons(){
+  grid.innerHTML = Array.from({length: 6}).map(()=>`
+    <div class="skeleton">
+      <div class="skeleton-img"></div>
+      <div class="skeleton-text"></div>
+      <div class="skeleton-price"></div>
+    </div>
+  `).join("");
+}
+function cardHTML(p,i){
+  return `
+    <article class="card 
+      ${!p.disponible ? 'agotado' : ''} 
+      ${p.tipo === 'nicho' ? 'nicho' : ''}"
+      style="animation-delay:${i * 70}ms"
+      ${p.disponible ? `onclick="openDetail(${perfumes.indexOf(p)})"` : ''}>
+
+      ${
+        !p.disponible
+          ? `<div class="agotado-badge">
+              AGOTADO
+              ${p.disponibleHasta && timeLeft(p.disponibleHasta)
+                ? `<div style="font-size:10px;margin-top:2px;">
+                    Disponible en ${timeLeft(p.disponibleHasta)}
+                  </div>`
+                : ''}
+            </div>`
+          : ''
+      }
+
+
+
+      <div class="img">
+        <img src="${p.imagen}" alt="${p.nombre}">
+      </div>
+
+      <div class="content">
+        <div class="name">${p.nombre}</div>
+        <div class="price-from">
+          Desde ${money(p.decants[5], p.moneda)}
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function renderGrid(){
+
+  const visibles = perfumes.filter(p => p.visible !== false);
+
+  const nicho = visibles.filter(p => p.tipo === "nicho");
+  const designer = visibles.filter(p => p.tipo === "designer");
+  const arabes = visibles.filter(p => p.tipo === "arab");
+
+  let html = "";
+
+  if(nicho.length){
+    html += `
+      <div class="separator-nicho">
+        <h3>PERFUMERÍA NICHO</h3>
+        <p>Alta perfumería • Exclusivos • Calidad superior</p>
+      </div>
+      ${nicho.map((p,i)=>cardHTML(p,i)).join("")}
+    `;
+  }
+
+  if(designer.length){
+    html += `
+      <div class="separator">DISEÑADOR</div>
+      ${designer.map((p,i)=>cardHTML(p,i + nicho.length)).join("")}
+    `;
+  }
+
+  if(arabes.length){
+    html += `
+      <div class="separator">ÁRABES</div>
+      ${arabes.map((p,i)=>cardHTML(p,i + nicho.length + designer.length)).join("")}
+    `;
+  }
+
+  grid.innerHTML = html;
+}
+
+
+showSkeletons();
+
+setTimeout(()=>{
+  renderGrid();
+}, 300); // 0.9 segundos solo para prueba
+
+setInterval(()=>{
+  let updated = false;
+
+  perfumes.forEach(p=>{
+    if(!p.disponible && p.disponibleHasta){
+      if(new Date(p.disponibleHasta) <= new Date()){
+        p.disponible = true;
+        delete p.disponibleHasta;
+        updated = true;
+      }
+    }
+  });
+
+  if(updated) renderGrid();
+}, 60000); // revisa cada 1 minuto
+
+let selectedIndex = null;
+
+function openDetail(i){
+  vibrate();
+  const p = perfumes[i];
+  selectedIndex = i;
+
+  if(!p.disponible){
+    modalContent.innerHTML = `
+      <h2>${p.nombre}</h2>
+      <p class="muted">Producto agotado</p>
+      <p style="margin-top:10px;color:var(--muted)">
+        Escríbeme para saber cuándo vuelve.
+      </p>
+    `;
+    modal.classList.add("show");
+    return;
+  }
+
+  modalContent.innerHTML = `
+    <h2>${p.nombre}</h2>
+    <p class="muted">${p.marca} • ${p.genero}</p>
+
+    <img src="${p.imagenDetalle}" class="detail-img" alt="${p.nombre}"
+         onclick="openImage('${p.imagenDetalle}')">
+
+    <h3>Selecciona ml</h3>
+    <div class="ml-options">
+      ${Object.keys(p.decants).map(ml=>`
+        <button id="ml-${ml}" onclick="selectML(${ml})">${ml} ml</button>
+      `).join("")}
+    </div>
+
+    <div class="prices">
+      <div id="selectedPrice" class="price-decants">Selecciona un tamaño</div>
+      <div class="price-full">Entero: ${money(p.precioEntero,p.moneda)}</div>
+    </div>
+
+    <a id="waBtn" class="btn disabled">Pedir por WhatsApp</a>
+  `;
+  modal.classList.add("show");
+  document.body.style.overflow = "hidden";
+
+}
+
+
+function closeDetail(){
+  modal.classList.remove("show");
+  document.body.style.overflow = "";
+}
+
+modal.addEventListener("click", e => {
+  if(e.target === modal){
+    closeDetail();
+  }
+});
+
+
+function selectML(ml){
+  vibrate();
+  const p = perfumes[selectedIndex];
+  document.querySelectorAll(".ml-options button").forEach(b=>b.classList.remove("active"));
+  document.getElementById(`ml-${ml}`).classList.add("active");
+
+  const price = p.decants[ml];
+  document.getElementById("selectedPrice").textContent =
+    `${ml} ml — ${money(price,p.moneda)}`;
+
+  const msg = encodeURIComponent(
+    `Hola, quiero:\n${p.nombre}\n${ml} ml\nPrecio: ${money(price,p.moneda)}`
+  );
+
+  const btn = document.getElementById("waBtn");
+  btn.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
+  btn.classList.remove("disabled");
+}
+
+function openImage(src){
+  imgViewerContent.src = src;
+  imgViewer.classList.add("show");
+}
+function closeImage(){
+  imgViewer.classList.remove("show");
+}
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape") closeImage();
+});
+function vibrate(){
+  if(navigator.vibrate) navigator.vibrate(20);
+}
+function timeLeft(date){
+  const diff = new Date(date) - new Date();
+  if(diff <= 0) return null;
+
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor(diff % 86400000 / 3600000);
+  const m = Math.floor(diff % 3600000 / 60000);
+
+  return `${d}d ${h}h ${m}m`;
+}
+
+
+
+</script>
+<!-- ===== WHATSAPP FLOTANTE ===== -->
+<a class="wa-fixed"
+   href="https://wa.me/527671033923"
+   target="_blank">
+  WhatsApp
+</a>
+
+<section class="wrap" id="resenas">
+  <h2 style="text-align:center;margin-bottom:14px;">
+    ⭐ Opiniones de clientes
+  </h2>
+
+  <p class="muted" style="text-align:center;margin-bottom:20px;">
+    Reseñas reales de clientes que ya compraron
+  </p>
+
+  <div class="grid" id="resenasGrid"></div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <p>© 2025 Perfumería</p>
+  <p class="muted">Productos originales • Envíos a todo Altamirano</p>
+</footer>
+<script>
+const resenas = [
+    "resenas/r1.jpg",
+  "resenas/r2.jpg",
+  "resenas/r3.jpg",
+  "resenas/r4.jpg",
+  "resenas/r5.jpg",
+  "resenas/r6.jpg",
+  "resenas/r7.jpg",
+  "resenas/r8.jpg",
+  "resenas/r9.jpg",
+  "resenas/r10.jpg",
+  "resenas/r11.jpg",
+  "resenas/r12.jpg"
+];
+
+const resenasGrid = document.getElementById("resenasGrid");
+
+if(resenasGrid){
+  resenasGrid.innerHTML = resenas.map(img => `
+    <div class="review-card" onclick="openImage('${img}')">
+      <img src="${img}" alt="Reseña de cliente">
+    </div>
+  `).join("");
+}
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
