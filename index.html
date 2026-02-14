@@ -528,6 +528,88 @@ body{
 .card.nicho{
   border: 1px solid rgba(255,215,0,.45);
 }
+/* ===== SETS DISPONIBLES ===== */
+.sets-title{
+  text-align:center;
+  font-weight:900;
+  font-size:18px;
+  margin:20px 0;
+  color:#ffd700;
+  letter-spacing:.1em;
+  animation: softBlink 2s infinite;
+}
+
+.sets-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:16px;
+}
+
+.set-card{
+  background:linear-gradient(135deg,#1a1f2e,#121826);
+  border:2px solid #ffd700;
+  border-radius:18px;
+  padding:16px;
+  text-align:center;
+  box-shadow:0 20px 40px rgba(0,0,0,.6);
+  position:relative;
+  overflow:hidden;
+  transition:transform .25s ease;
+}
+
+.set-card:hover{
+  transform:translateY(-6px);
+}
+
+.set-card img{
+  width:100%;
+  max-height:260px;
+  object-fit:contain;
+  margin-bottom:10px;
+}
+
+.set-name{
+  font-weight:800;
+  font-size:16px;
+  margin-bottom:6px;
+}
+
+.set-old{
+  text-decoration:line-through;
+  color:#ff4d4d;
+  font-weight:700;
+  font-size:14px;
+}
+
+.set-new{
+  font-size:22px;
+  font-weight:900;
+  color:#22c55e;
+  margin-top:4px;
+}
+
+.set-discount{
+  position:absolute;
+  top:12px;
+  right:12px;
+  background:#e11d48;
+  color:white;
+  font-size:12px;
+  font-weight:900;
+  padding:4px 8px;
+  border-radius:999px;
+}
+
+.set-btn{
+  display:block;
+  margin-top:12px;
+  padding:10px;
+  border-radius:12px;
+  background:#22c55e;
+  color:white;
+  text-decoration:none;
+  font-weight:800;
+}
 
 
 
@@ -562,6 +644,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 
 
+<!-- ===== SETS DISPONIBLES ===== -->
+<section class="wrap" id="setsSection">
+
+  <div class="sets-title">
+    🔥 SETS DISPONIBLES 🔥
+  </div>
+
+  <div class="sets-grid" id="setsGrid"></div>
+
+</section>
 
 <div class="wrap">
   <div id="grid" class="grid"></div>
@@ -1075,11 +1167,57 @@ const perfumes = [
   }
 ];
 
+
 const grid = document.getElementById("grid");
 const modal = document.getElementById("modal");
 const modalContent = document.getElementById("modalContent");
 
 const money = (n,m)=>new Intl.NumberFormat("es-MX",{style:"currency",currency:m}).format(n);
+const sets = [
+  {
+    nombre: "Set Phantom Parfum 3 pzs",
+    imagen: "sets/pacoset.png",
+    precioAntes: 3300,
+    precioAhora: 2300,
+    moneda: "MXN"
+  },
+  {
+    nombre: "Vintage Radio 3 Piece Gift Set",
+    imagen: "sets/radioset.png",
+    precioAntes: 1400,
+    precioAhora: 1100,
+    moneda: "MXN"
+  }
+];
+
+const setsGrid = document.getElementById("setsGrid");
+
+if(setsGrid){
+  setsGrid.innerHTML = sets.map(s => {
+    const descuento = Math.round(
+      (1 - s.precioAhora / s.precioAntes) * 100
+    );
+
+    const msg = encodeURIComponent(
+      `Hola, quiero el SET:\n${s.nombre}\nPrecio: ${money(s.precioAhora, s.moneda)}`
+    );
+
+    return `
+      <div class="set-card">
+        <div class="set-discount">-${descuento}%</div>
+        <img src="${s.imagen}" alt="${s.nombre}">
+        <div class="set-name">${s.nombre}</div>
+        <div class="set-old">${money(s.precioAntes, s.moneda)}</div>
+        <div class="set-new">${money(s.precioAhora, s.moneda)}</div>
+        <a class="set-btn" 
+           href="https://wa.me/${WHATSAPP_NUMBER}?text=${msg}"
+           target="_blank">
+          Pedir SET
+        </a>
+      </div>
+    `;
+  }).join("");
+}
 function showSkeletons(){
   grid.innerHTML = Array.from({length: 6}).map(()=>`
     <div class="skeleton">
@@ -1345,41 +1483,3 @@ if(resenasGrid){
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
