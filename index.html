@@ -1111,7 +1111,7 @@ const perfumes = [
     tipo: "arab",
     imagen: "img/vr.png",
     imagenDetalle: "img/vr.png",
-    decants: { "3"55,"5":80, "10":140 },
+    decants: { "3":55,"5":80, "10":140 },
     precioEntero: "",
     moneda: "MXN",
     disponible: true,
@@ -1353,7 +1353,7 @@ function cardHTML(p,i){
       <div class="content">
         <div class="name">${p.nombre}</div>
         <div class="price-from">
-          Desde ${money(p.decants[5], p.moneda)}
+          Desde ${money(p.decants[3], p.moneda)}
         </div>
       </div>
     </article>
